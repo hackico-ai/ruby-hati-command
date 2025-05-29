@@ -115,6 +115,12 @@ puts result.result   # Outputs: HatiCommand::Failure
 class GreetingCommand
   include HatiCommand::Cmd
 
+  # NOTE: Will catch unexpected and wrap to HatiCommand::Failure object
+  #       Requires true || ErrorObject
+  command do
+    unexpected_err true
+  end
+
   def call(params)
     message = process_message(params[:message])
     msg = normalize_message(message, params[:recipients])
@@ -122,6 +128,7 @@ class GreetingCommand
     Success(msg)
   end
 
+  # NOTE: No message passed - auto break an execution
   def process_message(message)
     message ? message.upcase : Failure!("No message provided")
   end
@@ -135,9 +142,9 @@ end
 ```
 
 ```ruby
-params = {recipients: []}
-
-result = GreetingCommand.call(params)
+# NOTE: No message passed - command exited
+#       Returns Result (Failure) object
+result = GreetingCommand.call
 
 puts result.failure? # Outputs: true
 puts result.failure  # Outputs: "No message provided"
@@ -145,6 +152,7 @@ puts result.value    # Outputs: "No message provided"
 ```
 
 ```ruby
+
 result = GreetingCommand.call(params.merge(message: "Hello!"))
 
 puts result.failure? # Outputs: true
