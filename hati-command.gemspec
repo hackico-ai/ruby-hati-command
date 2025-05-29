@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.name    = 'hati-command'
   spec.version = HatiCommand::VERSION
   spec.authors = %w[yurigitsu MarieGiy]
-  spec.email   = ['hackico.ai@gmail.com']
+  spec.email   = %w[yurigi.pro@gmail.com giy.mariya@gmail.com]
   spec.license = 'MIT'
 
   spec.summary     = 'A Ruby gem for creating command objects with result handling.'
