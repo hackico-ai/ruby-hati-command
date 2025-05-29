@@ -8,7 +8,7 @@ require 'hati_command/version'
 Gem::Specification.new do |spec|
   spec.name    = 'hati-command'
   spec.version = HatiCommand::VERSION
-  spec.authors = %w[yurigitsu mariyagiy]
+  spec.authors = %w[yurigitsu MarieGiy]
   spec.email   = ['hackico.ai@gmail.com']
   spec.license = 'MIT'
 
@@ -18,8 +18,8 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 3.0.0'
 
-  spec.files         = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'hati-command.gemspec', 'lib/**/*']
-  spec.bindir        = 'bin'
+  spec.files  = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'hati-command.gemspec', 'lib/**/*']
+  spec.bindir = 'bin'
   spec.executables   = []
   spec.require_paths = ['lib']
 
