@@ -1,6 +1,6 @@
-# hati-command
+# ![Ruby](icon.svg) hati-command
 
-The hati-command gem is designed to simplify command execution, emphasizing effective handling of success and failure outcomes. It can be employed as a service object or interactor, fostering clean and organized code for managing complex operations.
+The `hati-command` gem is designed to simplify command execution, emphasizing effective handling of success and failure outcomes. It can be employed as a service object or interactor, fostering clean and organized code for managing complex operations.
 
 - **hati-command** provides a simple and flexible way to handle command execution and result handling.
 
