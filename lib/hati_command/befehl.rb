@@ -42,6 +42,9 @@ module HatiCommand
         @__command_config
       end
 
+      # Sets the result inference behavior for the command.
+      # @param value [Boolean] Indicates whether to enable result inference.
+      # @return [void]
       def result_inference(value)
         @__command_config[:result_inference] = value
       end
@@ -67,11 +70,17 @@ module HatiCommand
         @__command_config[:unexpected_err] = value
       end
 
-      # Executes the command with the given arguments
-      # @param args [Array] Arguments to be passed to the instance method
-      # @yield [Object] Optional block that yields the new instance
-      # @return [Object] The result of the command execution
-      # @raise [StandardError] If an unexpected error occurs and no handler is configured
+      # Executes the command with the given arguments.
+      #
+      # This method creates a new instance of the command class, yields it to an optional block,
+      # and then calls the instance method with the provided arguments. It handles the result
+      # of the command execution, returning a success or failure result based on the outcome.
+      #
+      # @param args [Array] Arguments to be passed to the instance method.
+      # @yield [Object] Optional block that yields the new instance for additional configuration.
+      # @return [HatiCommand::Result, Object] The result of the command execution, wrapped in a Result object if applicable.
+      # @raise [HatiCommand::Errors::FailFastError] If a fail-fast condition is triggered.
+      # @raise [StandardError] If an unexpected error occurs and no handler is configured.
       def call(...)
         obj = new
         yield(obj) if block_given?
