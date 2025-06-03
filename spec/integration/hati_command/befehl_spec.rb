@@ -12,13 +12,18 @@ RSpec.describe HatiCommand::Befehl do
         command do
           fail_fast 'Default Fail Fast message provided'
           unexpected_err true
+          result_inference true
         end
 
-        def call(message, fail_fast: false, unexpected_err: false)
+        def call(message, fail_fast: false, unexpected_err: false, result_inference: false)
           raise HatiCommand::Errors::FailFastError.new('Fail Fast Triggered') if fail_fast # rubocop:disable Style/RaiseArgs
           raise StandardError if unexpected_err
 
-          HatiCommand::Success.new(message)
+          if result_inference
+            message
+          else
+            HatiCommand::Success.new(message)
+          end
         end
       end
     )
@@ -54,6 +59,14 @@ RSpec.describe HatiCommand::Befehl do
           expect(result).to be_a(HatiCommand::Failure)
           expect(result.error).to be_a(StandardError)
         end
+      end
+    end
+
+    context 'when result_inference is true' do
+      let(:result) { MyDummyBefehl.call('This is a result inference message', result_inference: true) }
+
+      it 'returns success' do
+        expect(result).to be_a(HatiCommand::Success)
       end
     end
   end

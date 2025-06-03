@@ -89,7 +89,7 @@ module HatiCommand
         return result unless command_config[:result_inference]
         return result if result.is_a?(HatiCommand::Result)
 
-        Success(result)
+        HatiCommand::Success.new(result)
       rescue HatiCommand::Errors::FailFastError => e
         handle_fail_fast_error(e)
       rescue StandardError => e
