@@ -32,6 +32,7 @@ The `hati-command` gem is designed to simplify command execution, emphasizing ef
     - [failure](#failure)
     - [fail_fast](#fail_fast)
     - [unexpected_err](#unexpected_err)
+    - [result_inference](#result_inference)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -364,6 +365,29 @@ puts result.failure # Outputs: TypeError: no implicit conversion of Integer into
 
 puts result.error   # Outputs: GreetingError
 puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:12:in `call'
+```
+
+### result_inference
+
+```ruby
+1 | class GreetingCommand
+2 |   include HatiCommand::Cmd
+3 |
+4 |   command do
+5 |     result_inference true # Implicitly wraps non-Result as Success
+5 |   end
+6 |
+7 |   def call
+8 |     42
+9 |   end
+10|   # ...
+11| end
+```
+
+```ruby
+result = GreetingCommand.call
+puts result.success  # Outputs: 42
+puts result.failure? # Outputs: false
 ```
 
 ## Authors

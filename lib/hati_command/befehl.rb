@@ -42,6 +42,10 @@ module HatiCommand
         @__command_config
       end
 
+      def result_inference(value)
+        @__command_config[:result_inference] = value
+      end
+
       # Sets the failure handler for the command
       # @param value [Symbol, Proc] The failure handler to be used
       # @return [void]
@@ -71,7 +75,12 @@ module HatiCommand
       def call(...)
         obj = new
         yield(obj) if block_given?
-        obj.call(...)
+
+        result = obj.call(...)
+        return result unless result_inference
+        return result if result.is_a?(HatiCommand::Result)
+
+        Success(result)
       rescue HatiCommand::Errors::FailFastError => e
         handle_fail_fast_error(e)
       rescue StandardError => e
