@@ -86,7 +86,7 @@ module HatiCommand
         yield(obj) if block_given?
 
         result = obj.call(...)
-        return result unless result_inference
+        return result unless command_config[:result_inference]
         return result if result.is_a?(HatiCommand::Result)
 
         Success(result)
