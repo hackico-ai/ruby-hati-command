@@ -32,7 +32,7 @@ module HatiCommand
       #     fail_fast true
       #   end
       def command(&block)
-        @__command_config ||= {}
+        @__command_config ||= { call_as: :call }
         instance_eval(&block) if block_given?
       end
 
@@ -70,6 +70,14 @@ module HatiCommand
         @__command_config[:unexpected_err] = value
       end
 
+      # This method checks if a caller method has been set; if not, it defaults to `:call`.
+      # @return [Symbol] The name of the method to call.
+      def call_as(value = :call)
+        @__command_config[:call_as] = value
+
+        singleton_class.send(:alias_method, value, :call)
+      end
+
       # Executes the command with the given arguments.
       #
       # This method creates a new instance of the command class, yields it to an optional block,
@@ -83,9 +91,10 @@ module HatiCommand
       # @raise [StandardError] If an unexpected error occurs and no handler is configured.
       def call(...)
         obj = new
+
         yield(obj) if block_given?
 
-        result = obj.call(...)
+        result = obj.send(command_config[:call_as], ...)
         return result unless command_config[:result_inference]
         return result if result.is_a?(HatiCommand::Result)
 
