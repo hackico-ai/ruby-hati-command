@@ -57,3 +57,6 @@ build-iPhoneSimulator/
 
 # Specs
 .rspec_status
+
+# Dev env
+Gemfile.lock

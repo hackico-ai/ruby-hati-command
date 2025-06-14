@@ -252,6 +252,8 @@ Provides options for default failure message or errors. Available configs are:
 - `failure` - Message or Error
 - `fail_fast` - Message or Error
 - `unexpected_err` - Bool(true) or Message or Error
+- `result_inference` - Bool(true) | implicit Result wrapper
+- `call_as` - Symbol | Main call method name
 
 ### failure
 
@@ -386,6 +388,29 @@ puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:12:in `call'
 
 ```ruby
 result = GreetingCommand.call
+puts result.success  # Outputs: 42
+puts result.failure? # Outputs: false
+```
+
+### call_as
+
+```ruby
+1 | class GreetingCommand
+2 |   include HatiCommand::Cmd
+3 |
+4 |   command do
+5 |     call_as :execute # E.q. :perform, :run, etc.
+5 |   end
+6 |
+7 |   def execute
+8 |     Success(42)
+9 |   end
+10|   # ...
+11| end
+```
+
+```ruby
+result = GreetingCommand.execute
 puts result.success  # Outputs: 42
 puts result.failure? # Outputs: false
 ```
