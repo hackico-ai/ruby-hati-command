@@ -24,15 +24,18 @@ The `hati-command` gem is designed to simplify command execution, emphasizing ef
   - [Handling Failure](#handling-failure)
   - [Transactional Behavior](#transactional-behavior-fail-fast-with-failure)
 - [Advanced Usage](#advanced-usage)
+
   - [Result Customization](#result-customization)
     - [meta](#meta)
     - [error](#error)
     - [trace](#trace)
   - [Command Configurations](#command-configurations)
+    - [result_inference](#result_inference)
+    - [call_as](#call_as)
     - [failure](#failure)
     - [fail_fast](#fail_fast)
     - [unexpected_err](#unexpected_err)
-    - [result_inference](#result_inference)
+
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -249,11 +252,84 @@ puts result.trace    # Outputs: path/to/cmds/doomed_command.rb:5:in `call'
 
 Provides options for default failure message or errors. Available configs are:
 
+- `result_inference` - Bool(true) | implicit Result wrapper
+- `call_as` - Symbol | Default :call | Main call method name
 - `failure` - Message or Error
 - `fail_fast` - Message or Error
 - `unexpected_err` - Bool(true) or Message or Error
-- `result_inference` - Bool(true) | implicit Result wrapper
-- `call_as` - Symbol | Main call method name
+
+```ruby
+class AppService
+  include HatiCommand::Cmd
+
+  command do
+    result_inference true
+    call_as :perform
+    failure "Default Error"
+    fail_fast "Default Fail Fast Error"
+    unexpected_err ServiceError
+  end
+
+  # ...
+end
+
+class PaymentService < AppService
+  def perform
+   currency_exchange
+   add_funds
+   # ...
+  end
+
+  # ...
+end
+
+```
+
+### result_inference
+
+```ruby
+class GreetingCommand
+  include HatiCommand::Cmd
+
+  command do
+    result_inference true # Implicitly wraps non-Result as Success
+  end
+
+  def call
+    42
+  end
+  # ...
+end
+```
+
+```ruby
+result = GreetingCommand.call
+puts result.success  # Outputs: 42
+puts result.failure? # Outputs: false
+```
+
+### call_as
+
+```ruby
+class GreetingCommand
+  include HatiCommand::Cmd
+
+  command do
+    call_as :execute # E.q. :perform, :run, etc.
+  end
+
+  def execute
+    Success(42)
+  end
+  # ...
+end
+```
+
+```ruby
+result = GreetingCommand.execute
+puts result.success  # Outputs: 42
+puts result.failure? # Outputs: false
+```
 
 ### failure
 
@@ -276,9 +352,11 @@ Provides options for default failure message or errors. Available configs are:
 16| end
 ```
 
+NOTE: not configured fail fast uses default error
+
 ```ruby
 result = DoomedCommand.call(fail_fast: true)
-# NOTE: not configured fail fast uses default error
+
 puts result.failure # Outputs: nil
 puts result.error   # Outputs: "Default Error"
 puts result.trace   # Outputs: path/to/cmds/doomed_command.rb:5:in `call'
@@ -360,59 +438,14 @@ puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:9:in `call'
 14| end
 ```
 
+NOTE: Original error becomes value (failure)
+
 ```ruby
 result = GreetingCommand.call
-# NOTE: Original error becomes value (failure)
-puts result.failure # Outputs: TypeError: no implicit conversion of Integer into String
 
+puts result.failure # Outputs: TypeError: no implicit conversion of Integer into String
 puts result.error   # Outputs: GreetingError
 puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:12:in `call'
-```
-
-### result_inference
-
-```ruby
-1 | class GreetingCommand
-2 |   include HatiCommand::Cmd
-3 |
-4 |   command do
-5 |     result_inference true # Implicitly wraps non-Result as Success
-5 |   end
-6 |
-7 |   def call
-8 |     42
-9 |   end
-10|   # ...
-11| end
-```
-
-```ruby
-result = GreetingCommand.call
-puts result.success  # Outputs: 42
-puts result.failure? # Outputs: false
-```
-
-### call_as
-
-```ruby
-1 | class GreetingCommand
-2 |   include HatiCommand::Cmd
-3 |
-4 |   command do
-5 |     call_as :execute # E.q. :perform, :run, etc.
-5 |   end
-6 |
-7 |   def execute
-8 |     Success(42)
-9 |   end
-10|   # ...
-11| end
-```
-
-```ruby
-result = GreetingCommand.execute
-puts result.success  # Outputs: 42
-puts result.failure? # Outputs: false
 ```
 
 ## Authors
