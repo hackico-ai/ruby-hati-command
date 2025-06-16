@@ -35,6 +35,7 @@ The `hati-command` gem is designed to simplify command execution, emphasizing ef
     - [failure](#failure)
     - [fail_fast](#fail_fast)
     - [unexpected_err](#unexpected_err)
+    - [ar_transaction](#ar_transaction)
 
 - [Development](#development)
 - [Contributing](#contributing)
@@ -57,7 +58,13 @@ gem install hati-command
 
 ## Basic Usage
 
-To use the `hati-command` gem, you can create a command class that includes the `HatiCommand::Cmd` module. Here’s a simple example:
+To use the `hati-command` gem, you can create a command class that includes the `HatiCommand::Cmd` module.
+
+Note: No need to nest object APIs under `private` as popular template for `Servie Object` designs
+
+    only main caller method is public by design
+
+#### Example
 
 ```ruby
 require 'hati_command'
@@ -82,6 +89,13 @@ class GreetingCommand
 end
 ```
 
+### Command `API`
+
+```ruby
+result = GreetingCommand.call("Hello, World!") # Outputs: Result
+result = GreetingCommand.new                   # Outputs: private method `new' called
+```
+
 ### Handling `Success`
 
 ```ruby
@@ -95,7 +109,6 @@ puts result.failure  # Outputs: nil
 
 puts result.value    # Outputs: "HELLO, WORLD!"
 puts result.result   # Outputs: HatiCommand::Success
-
 ```
 
 ### Handling `Failure`
@@ -252,11 +265,15 @@ puts result.trace    # Outputs: path/to/cmds/doomed_command.rb:5:in `call'
 
 Provides options for default failure message or errors. Available configs are:
 
-- `result_inference` - Bool(true) | implicit Result wrapper
-- `call_as` - Symbol | Default :call | Main call method name
-- `failure` - Message or Error
-- `fail_fast` - Message or Error
-- `unexpected_err` - Bool(true) or Message or Error
+- `result_inference`(Bool(true)) => implicit Result wrapper
+- `call_as`(Symbol[:call]) => Main call method name
+- `failure`(String | ErrorClass) => Message or Error
+- `fail_fast`(String || ErrorClass) => Message or Error
+- `unexpected_err`(Bool[true]) => Message or Error
+
+#### Experimental:
+
+- `ar_transaction`(Array[Symbol], returnable: Bool[true]) => methods to wrap in Transaction, requires 'activerecord'
 
 ```ruby
 class AppService
@@ -267,17 +284,26 @@ class AppService
     call_as :perform
     failure "Default Error"
     fail_fast "Default Fail Fast Error"
-    unexpected_err ServiceError
+    unexpected_err BaseServiceError
   end
 
   # ...
 end
 
 class PaymentService < AppService
-  def perform
-   currency_exchange
-   add_funds
-   # ...
+  command do
+    ar_transaction :perform # WIP: Experimental
+    unexpected_err PaymentServiceTechnicalError
+  end
+
+  def perform(params)
+    account = Account.lock.find(user_id)
+    Failure("User account is inactive") unless user.active?
+
+    CreditTransaction.create!(user_id: user.id, amount: amount)
+    AuditLog.create!(action: 'add_funds', account: account)
+
+    Success('Funds has been add to account')
   end
 
   # ...
@@ -446,6 +472,74 @@ result = GreetingCommand.call
 puts result.failure # Outputs: TypeError: no implicit conversion of Integer into String
 puts result.error   # Outputs: GreetingError
 puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:12:in `call'
+```
+
+## Experimental
+
+### ar_transaction
+
+Wraps listed methods in Transaction with blocking non-Result returns.
+At this dev stage relies on 'activerecord'
+
+- NOTE: considering extensicve expirience of usage, we recomend to use some naming convention
+  across codebase for such methods, to keep healthy Elegance-to-Explicitness ratio
+
+  #### E.g. suffixes: \_flow, \_transaction, \_task, etc.
+
+- NOTE: `Failure()` works as transaction break, returns only from called method's as Result (Failure) object
+
+- NOTE: `Failure!()` works on Service level same fail_fast immediately halts execution, return from
+
+- NOTE: Unlike `ActiveRecord::Transaction` Implicit non-Result returns will trigger `TransactionError`,
+  blocking partial commit state unless:
+
+```ruby
+  ar_transaction :transactional_method_name, returnable: false # Defaults to true
+```
+
+### Pseudo-Example:
+
+```ruby
+  class PaymentService < AppService
+    command do
+      ar_transaction :add_funds_transaction
+      unexpected_err PaymentServiceTechnicalError
+    end
+
+    def call(params)
+      amount = currency_exchange(params[:amount])
+      debit_transaction = add_funds_transaction(amount)
+
+      return debit_transaction if debit_transaction.success?
+
+      Failure(debit_transaction, err: 'Unable to add funds')
+    end
+
+    def currency_exchange
+      # ...
+    end
+
+    # Whole method evaluates in ActiveRecord::Transaction block
+    def add_funds_transaction(amount)
+      account = Account.lock.find(user_id)
+      Failure("User account is inactive") unless user.active?
+
+      # Fires TransactionError, unless :returnable configuration is disabled
+      return 'I am an Error'
+
+      user.balance += amount
+      user.save
+      Failure('Account debit issue') if user.errors
+
+      CreditTransaction.create!(user_id: user.id, amount: amount)
+      AuditLog.create!(action: 'add_funds', account: account)
+
+      # NOTE: result inference won't work, use only Result objects
+      Success('Great Succeess')
+    end
+
+  # ...
+  end
 ```
 
 ## Authors
