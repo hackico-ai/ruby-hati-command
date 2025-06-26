@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 # @module HatiCommand
 # Provides command handling functionalities for creating and managing commands.
 # This module serves as the main namespace for all command-related operations.
