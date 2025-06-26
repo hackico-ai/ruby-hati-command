@@ -140,8 +140,9 @@ module HatiCommand
       # @return [HatiCommand::Result, Object] The result of the command, wrapped in a Result object if applicable.
       # @raise [HatiCommand::Errors::FailFastError] If a fail-fast condition is triggered.
       # @raise [StandardError] If an unexpected error occurs and no handler is configured.
-      def call(...)
-        result = caller_result(...)
+      def call(*args, __command_reciever: nil, **kwargs, &block)
+        result = caller_result(*args, __command_reciever: __command_reciever, **kwargs, &block)
+
         return result unless command_config[:result_inference]
         return result if result.is_a?(HatiCommand::Result)
 
@@ -152,11 +153,18 @@ module HatiCommand
         handle_standard_error(e)
       end
 
-      def caller_result(...)
-        obj = new
-        yield(obj) if block_given?
+      # TODO: think on opts to hide reciever
+      def caller_result(*args, __command_reciever: nil, **kwargs, &block)
+        # expecting pre-configured reciever if given
+        if __command_reciever
+          obj = __command_reciever
+        else
+          obj = new
+          yield(obj) if !obj && block_given?
+        end
+
         # TODO: add error if no instance method to call
-        obj.send(command_config[:call_as] || :call, ...)
+        obj.send(command_config[:call_as] || :call, *args, **kwargs, &block)
       end
 
       module_function
