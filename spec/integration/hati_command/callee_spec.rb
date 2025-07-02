@@ -7,13 +7,13 @@ RSpec.describe HatiCommand::Callee do
     before do
       stub_const('DummyCallee', Class.new do
         include HatiCommand::Callee
-  
+
         def call(rez)
           HatiCommand::Success.new(rez)
         end
       end)
     end
-  
+
     let(:callee_klass) { DummyCallee }
 
     describe '.call' do

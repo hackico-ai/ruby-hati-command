@@ -7,9 +7,8 @@ gemspec
 gem 'rake'
 
 # Spec
-gem 'rspec', '~> 3.0'
-# WIP: Database Specs
 gem 'activerecord'
+gem 'rspec', '~> 3.0'
 gem 'sqlite3'
 
 # Linter & Static
