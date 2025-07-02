@@ -95,34 +95,4 @@ RSpec.describe HatiCommand::Befehl do
       end
     end
   end
-
-  # TODO: load ActiveRecord !!!!!
-  # describe 'ActiveRecord transaction wrapping' do
-  #   before do
-  #     stub_const(
-  #       'MyDummyExecBefehl',
-  #       Class.new(befehl_klass) do
-  #         command do
-  #           ar_transaction :call
-  #         end
-
-  #         def call(message)
-  #           HatiCommand::Success.new(message)
-  #         end
-  #       end
-  #     )
-  #   end
-
-  #   describe '.execute' do
-  #     let(:rez_msg) { 'This is a result AR transaction message' }
-  #     let(:result) { MyDummyExecBefehl.call(rez_msg) }
-
-  #     it 'returns success' do
-  #       aggregate_failures do
-  #         expect(result).to be_a(HatiCommand::Success)
-  #         expect(result.value).to eq(rez_msg)
-  #       end
-  #     end
-  #   end
-  # end
 end

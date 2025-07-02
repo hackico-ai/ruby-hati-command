@@ -4,7 +4,7 @@
 
 module Dummy
   def support_dummy_befehl(name)
-    stub_const(name, Class.new do
+    stub_const(name, Class.new do 
       extend HatiCommand::Befehl
     end)
   end
