@@ -12,8 +12,8 @@ Gem::Specification.new do |spec|
   spec.email   = %w[yurigi.pro@gmail.com giy.mariya@gmail.com]
   spec.license = 'MIT'
 
-  spec.summary     = 'A Ruby gem for creating command objects with result handling.'
-  spec.description = 'hati-command is a Ruby gem for implementing the Command pattern with result handling.'
+  spec.summary     = 'A Ruby gem for creating Service objects, Command pattern, and Interactors with result handling.'
+  spec.description = 'hati-command is a Ruby gem for implementing Service objects, Command pattern and Interactors with result handling.'
   spec.homepage    = "https://github.com/hackico-ai/#{spec.name}"
 
   spec.required_ruby_version = '>= 3.0.0'

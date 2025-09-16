@@ -10,6 +10,14 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  Dir[File.join('./spec/support/**/*.rb')].each { |f| require f }
+  # performance
+  exclude_support_files = ['active_record']
+
+  Dir[File.join('./spec/support/**/*.rb')].each do |support_file|
+    next if exclude_support_files.include?(support_file)
+
+    require support_file
+  end
+
   config.include Dummy
 end

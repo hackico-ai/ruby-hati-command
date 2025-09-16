@@ -43,7 +43,7 @@ module HatiCommand
   #   @return [Array<String>, nil] Execution trace information for debugging
   class Result
     attr_reader :value, :meta
-    attr_accessor :trace
+    attr_accessor :trace, :err
 
     # Initializes a new Result instance with a value and optional context.
     #

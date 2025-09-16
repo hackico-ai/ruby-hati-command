@@ -73,8 +73,8 @@ module HatiCommand
       default_error = self.class.command_config[:fail_fast] || self.class.command_config[:failure]
       error = err || default_error
 
-      err_obj = HatiCommand::Failure.new(value, err: error, meta: meta)
-      raise HatiCommand::Errors::FailFastError.new('Fail Fast Triggered', err_obj: err_obj)
+      failure_obj = HatiCommand::Failure.new(value, err: error, meta: meta)
+      raise HatiCommand::Errors::FailFastError.new('Fail Fast Triggered', failure_obj: failure_obj)
     end
   end
 end
