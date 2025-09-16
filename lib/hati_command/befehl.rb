@@ -32,7 +32,7 @@ module HatiCommand
       #     fail_fast true
       #   end
       def command(&block)
-        @__command_config ||= {}
+        @__command_config ||= { call_as: :call }
         instance_eval(&block) if block_given?
       end
 
@@ -40,6 +40,13 @@ module HatiCommand
       # @return [Hash] The current command configuration settings
       def command_config
         @__command_config
+      end
+
+      # Sets the result inference behavior for the command.
+      # @param value [Boolean] Indicates whether to enable result inference.
+      # @return [void]
+      def result_inference(value)
+        @__command_config[:result_inference] = value
       end
 
       # Sets the failure handler for the command
@@ -63,15 +70,35 @@ module HatiCommand
         @__command_config[:unexpected_err] = value
       end
 
-      # Executes the command with the given arguments
-      # @param args [Array] Arguments to be passed to the instance method
-      # @yield [Object] Optional block that yields the new instance
-      # @return [Object] The result of the command execution
-      # @raise [StandardError] If an unexpected error occurs and no handler is configured
+      # This method checks if a caller method has been set; if not, it defaults to `:call`.
+      # @return [Symbol] The name of the method to call.
+      def call_as(value = :call)
+        @__command_config[:call_as] = value
+
+        singleton_class.send(:alias_method, value, :call)
+      end
+
+      # Executes the command with the given arguments.
+      #
+      # This method creates a new instance of the command class, yields it to an optional block,
+      # and then calls the instance method with the provided arguments. It handles the result
+      # of the command execution, returning a success or failure result based on the outcome.
+      #
+      # @param args [Array] Arguments to be passed to the instance method.
+      # @yield [Object] Optional block that yields the new instance for additional configuration.
+      # @return [HatiCommand::Result, Object] The result of the command execution, wrapped in a Result object if applicable.
+      # @raise [HatiCommand::Errors::FailFastError] If a fail-fast condition is triggered.
+      # @raise [StandardError] If an unexpected error occurs and no handler is configured.
       def call(...)
         obj = new
+
         yield(obj) if block_given?
-        obj.call(...)
+
+        result = obj.send(command_config[:call_as], ...)
+        return result unless command_config[:result_inference]
+        return result if result.is_a?(HatiCommand::Result)
+
+        HatiCommand::Success.new(result)
       rescue HatiCommand::Errors::FailFastError => e
         handle_fail_fast_error(e)
       rescue StandardError => e

@@ -9,16 +9,6 @@ module Dummy
     end)
   end
 
-  def support_dummy_calle(name)
-    stub_const(name, Class.new do
-      include HatiCommand::Callee
-
-      def call(rez)
-        HatiCommand::Success.new(rez)
-      end
-    end)
-  end
-
   def support_dummy_cmd(name)
     stub_const(name, Class.new do
       include HatiCommand::Cmd

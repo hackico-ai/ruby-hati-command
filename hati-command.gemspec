@@ -8,7 +8,7 @@ require 'hati_command/version'
 Gem::Specification.new do |spec|
   spec.name    = 'hati-command'
   spec.version = HatiCommand::VERSION
-  spec.authors = %w[yurigitsu MarieGiy]
+  spec.authors = ['Mariya Giy', 'Yuri Gi']
   spec.email   = %w[yurigi.pro@gmail.com giy.mariya@gmail.com]
   spec.license = 'MIT'
 
