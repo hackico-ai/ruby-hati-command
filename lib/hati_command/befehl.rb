@@ -101,7 +101,8 @@ module HatiCommand
 
                 # Rollbacks to prevent partial transaction state
                 if returnable && !result.is_a?(HatiCommand::Result)
-                  raise ERR::ConfigurationError, 'This command configuration requires explicit return from transaction'
+                  raise ERR::ConfigurationError,
+                        'This command configuration requires explicit Result-return from transaction'
                 end
 
                 # Allows explicit partial commit
