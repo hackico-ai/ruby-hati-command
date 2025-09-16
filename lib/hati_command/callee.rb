@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 # @module HatiCommand
 # Provides command handling functionalities and callable patterns.
 module HatiCommand

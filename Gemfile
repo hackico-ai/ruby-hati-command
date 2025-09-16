@@ -7,7 +7,9 @@ gemspec
 gem 'rake'
 
 # Spec
+gem 'activerecord'
 gem 'rspec', '~> 3.0'
+gem 'sqlite3'
 
 # Linter & Static
 gem 'fasterer', '~> 0.11.0'

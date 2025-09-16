@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe HatiCommand::Errors::FailFastError do
+RSpec.describe HatiCommand::Errors::ConfigurationError do
   subject(:error_klass) { described_class }
 
   it 'inherits from BaseError' do
