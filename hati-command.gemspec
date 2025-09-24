@@ -12,8 +12,8 @@ Gem::Specification.new do |spec|
   spec.email   = %w[yurigi.pro@gmail.com giy.mariya@gmail.com]
   spec.license = 'MIT'
 
-  spec.summary     = 'A Ruby gem for creating Service objects, Command pattern, and Interactors with result handling.'
-  spec.description = 'hati-command is a Ruby gem for implementing Service objects, Command pattern and Interactors with result handling.'
+  spec.summary = 'A Ruby gem for building modular, agentic-ready service objects and command-style interactors in Railway-oriented programming with structured result handling.'
+  spec.description = 'hati-command makes possible the design of agentic software in Ruby. It provides a simple, clean, and easy abstraction for authoring composable Service Objects and command-pattern interactors. And because it mandates explicit Success and Failure flows, it is especially well-suited for autonomous systems, chains of deciders, and AI orchestrated workflows.'
   spec.homepage    = "https://github.com/hackico-ai/#{spec.name}"
 
   spec.required_ruby_version = '>= 3.0.0'

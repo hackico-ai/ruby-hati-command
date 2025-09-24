@@ -1,18 +1,21 @@
 # ![Ruby](icon.svg) hati-command
 
-The `hati-command` gem is designed to simplify command execution, emphasizing effective handling of success and failure outcomes. It can be employed as a service object or interactor, fostering clean and organized code for managing complex operations.
+The `hati-command` gem provides a lightweight framework for structuring logic as discrete, callable actions — ideal for agentic AI systems that require modular execution and explicit outcome handling.
 
-- **hati-command** provides a simple and flexible way to handle command execution and result handling.
-
-- **hati-command** offers a `Success` and `Failure` result classes to handle command execution results.
-
-- **hati-command** It provides a `Result` object to access the result value, success, and failure, along with options to attach custom messages and metadata for better context.
+- **hati-command** lets you define commands as service objects or interactors, ready for orchestration by AI agents.
+- **hati-command** returns standardized `Success` and `Failure` results, making it easy to reason about next steps in autonomous workflows.
 
 ## Features
 
-- **Command Execution**: Execute commands seamlessly, allowing for optional parameters.
-- **Success Handling**: Provides success responses with transformed messages and additional metadata.
-- **Failure Handling**: Handles failures gracefully, returning informative messages and context.
+- **Command Execution**: Encapsulate atomic operations with clear input/output boundaries for agent use.
+- **Structured Results**: Use `Result` objects with status, value, and metadata for deterministic planning.
+
+## Roadmap in Motion
+
+- AI Client Integration
+- Cursor-style rule generation for defining agent behaviors from commands
+- Planner integration (e.g. YAML/DSL for agent workflows)
+- Command auto-discovery and metadata exposure for agent indexing and selection
 
 ## Table of Contents
 
