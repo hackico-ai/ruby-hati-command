@@ -60,3 +60,6 @@ build-iPhoneSimulator/
 
 # Dev env
 Gemfile.lock
+
+# macOS
+.DS_Store
