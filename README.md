@@ -4,18 +4,19 @@ The `hati-command` gem provides a lightweight framework for structuring logic as
 
 - **hati-command** lets you define commands as service objects or interactors, ready for orchestration by AI agents.
 - **hati-command** returns standardized `Success` and `Failure` results, making it easy to reason about next steps in autonomous workflows.
+- **hati-command** provides built-in error tracing and metadata propagation, enabling reliable debugging, observability, and auditability across execution chains.
+- **hati-command** supports integrated transaction handling, allowing commands to execute safely within database or domain-level transactional boundaries.
 
 ## Features
 
 - **Command Execution**: Encapsulate atomic operations with clear input/output boundaries for agent use.
 - **Structured Results**: Use `Result` objects with status, value, and metadata for deterministic planning.
 
-## Roadmap in Motion
-
-- AI Client Integration
-- Cursor-style rule generation for defining agent behaviors from commands
-- Planner integration (e.g. YAML/DSL for agent workflows)
-- Command auto-discovery and metadata exposure for agent indexing and selection
+- **Deterministic command execution**: Clear input → execution → outcome boundaries with no hidden side effects.
+- **Failure as structured data**: Errors are returned as explicit results, not raised implicitly.
+- **Framework-agnostic service objects**: Works with plain Ruby or Rails without architectural coupling.
+- **Execution transparency**: Decision points and failure paths are visible and inspectable.
+- **Reliable foundation for automation and AI tooling**: Suitable for orchestration layers where correctness and traceability matter.
 
 ## Table of Contents
 
@@ -32,6 +33,7 @@ The `hati-command` gem provides a lightweight framework for structuring logic as
     - [meta](#meta)
     - [error](#error)
     - [trace](#trace)
+  - [Native DB Transaction](#native-db-active-record-transaction)
   - [Command Configurations](#command-configurations)
     - [result_inference](#result_inference)
     - [call_as](#call_as)
@@ -274,7 +276,7 @@ Provides options for default failure message or errors. Available configs are:
 - `fail_fast`(String || ErrorClass) => Message or Error
 - `unexpected_err`(Bool[true]) => Message or Error
 
-#### Experimental:
+#### Native DB Active Record Transaction:
 
 - `ar_transaction`(Array[Symbol], returnable: Bool[true]) => methods to wrap in Transaction, requires 'activerecord'
 
@@ -295,7 +297,7 @@ end
 
 class PaymentService < AppService
   command do
-    ar_transaction :perform # WIP: Experimental
+    ar_transaction :perform
     unexpected_err PaymentServiceTechnicalError
   end
 
@@ -476,8 +478,6 @@ puts result.failure # Outputs: TypeError: no implicit conversion of Integer into
 puts result.error   # Outputs: GreetingError
 puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:12:in `call'
 ```
-
-## Experimental
 
 ### ar_transaction
 
