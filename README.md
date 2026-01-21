@@ -2,6 +2,8 @@
 
 The `hati-command` gem provides a lightweight framework for structuring logic as discrete, callable actions — ideal for agentic AI systems that require modular execution and explicit outcome handling.
 
+## What it provides:
+
 - **hati-command** lets you define commands as service objects or interactors, ready for orchestration by AI agents.
 - **hati-command** returns standardized `Success` and `Failure` results, making it easy to reason about next steps in autonomous workflows.
 - **hati-command** provides built-in error tracing and metadata propagation, enabling reliable debugging, observability, and auditability across execution chains.
@@ -9,14 +11,13 @@ The `hati-command` gem provides a lightweight framework for structuring logic as
 
 ## Features
 
-- **Command Execution**: Encapsulate atomic operations with clear input/output boundaries for agent use.
-- **Structured Results**: Use `Result` objects with status, value, and metadata for deterministic planning.
-
-- **Deterministic command execution**: Clear input → execution → outcome boundaries with no hidden side effects.
-- **Failure as structured data**: Errors are returned as explicit results, not raised implicitly.
-- **Framework-agnostic service objects**: Works with plain Ruby or Rails without architectural coupling.
-- **Execution transparency**: Decision points and failure paths are visible and inspectable.
-- **Reliable foundation for automation and AI tooling**: Suitable for orchestration layers where correctness and traceability matter.
+- **Command Execution**: Encapsulate atomic operations with clear inputs and outputs.
+- **Structured Results**: Return `Result` objects with status, value, and metadata.
+- **Deterministic Execution**: Enforce explicit execution → outcome flow.
+- **Failure as Data**: Represent errors as explicit results.
+- **Framework-Agnostic Service Objects**: Works with plain `Ruby` or `Rails`.
+- **Execution Transparency**: Make decision points and failure paths visible.
+- **Automation & AI-Ready**: Suitable for orchestration and agent-driven w
 
 ## Table of Contents
 
