@@ -550,7 +550,7 @@ At this dev stage relies on 'activerecord'
 - [Marie Giy](https://github.com/mariegiy)
 
 ## Contributors
-- [Yuri Gi](https://github.com/yurigitsu) 
+- [yurigitsu](https://github.com/yurigitsu) 
 
 ## Development
 
